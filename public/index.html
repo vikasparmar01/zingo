@@ -1,0 +1,419 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Zingo · Talk to someone new</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="/" aria-label="Zingo home">
+      <svg class="logo" viewBox="0 0 32 32" aria-hidden="true">
+        <path d="M16 2C8.3 2 2 7.8 2 15c0 3.6 1.6 6.9 4.2 9.2L5 30l6.6-3.1c1.4.4 2.9.6 4.4.6 7.7 0 14-5.8 14-13S23.7 2 16 2z" fill="var(--accent)"/>
+        <path d="M10.5 9.5H21.5V12.1L14.1 19.7H21.5V22.5H10.1V19.9L17.5 12.3H10.5Z" fill="#000"/>
+      </svg>
+      zingo
+    </a>
+    <nav class="topnav" aria-label="Main">
+      <a href="#/" data-page="app">Chat</a>
+      <a href="#/creators" data-page="creators">Creators</a>
+      <a href="#/suggestions" data-page="suggestions">Suggestions</a>
+      <a href="#/admin" data-page="admin" id="admin-link" hidden>Admin</a>
+    </nav>
+    <div class="topbar-right">
+      <span class="online" id="online"></span>
+      <button id="logout-btn" class="link" hidden>Sign out</button>
+    </div>
+  </header>
+
+  <main>
+    <section id="login" class="screen">
+      <div class="auth-split">
+      <div class="auth-poster" aria-hidden="true">
+        <div class="poster-word">zingo</div>
+        <div class="poster-line">Random chats. Real people. Zero pressure.</div>
+      </div>
+      <div class="auth card">
+        <div class="auth-tabs" id="auth-tabs" role="tablist" aria-label="Account">
+          <button type="button" role="tab" data-mode="signin" aria-selected="true">Sign in</button>
+          <button type="button" role="tab" data-mode="signup" aria-selected="false">Sign up</button>
+        </div>
+        <h1 id="auth-title">Welcome back</h1>
+        <p class="muted" id="auth-sub">Sign in with your email or phone number.</p>
+
+        <form id="auth-form" novalidate>
+          <div class="segmented" role="radiogroup" aria-label="Use">
+            <label><input type="radio" name="method" value="email" checked><span>Email</span></label>
+            <label><input type="radio" name="method" value="phone"><span>Phone</span></label>
+          </div>
+
+          <div id="email-field">
+            <label class="field-label" for="email">Email</label>
+            <input id="email" type="email" class="text-input" autocomplete="email" maxlength="254" placeholder="Your email address">
+          </div>
+          <div id="phone-field" hidden>
+            <label class="field-label" for="phone">Phone number</label>
+            <div class="phone-row">
+              <select id="dial" class="text-input" aria-label="Country code"></select>
+              <input id="phone" type="tel" class="text-input" autocomplete="tel-national" inputmode="tel" maxlength="20" placeholder="Phone number">
+            </div>
+          </div>
+
+          <div id="password-field">
+            <label class="field-label" for="password">Password</label>
+            <div class="password-wrap">
+              <input id="password" type="password" class="text-input" autocomplete="current-password" maxlength="128">
+              <button type="button" class="pw-toggle" data-for="password">Show</button>
+            </div>
+          </div>
+
+          <button id="auth-submit" class="btn primary big">Sign in</button>
+          <div class="auth-links">
+            <button type="button" id="forgot-link" class="link">Forgot password?</button>
+            <button type="button" id="back-signin" class="link" hidden>Back to sign in</button>
+          </div>
+        </form>
+
+        <form id="code-form" hidden novalidate>
+          <p class="test-code" id="test-code" role="status" hidden></p>
+          <label class="field-label" for="code" id="code-label">Enter the code we sent you</label>
+          <input id="code" class="text-input code-input" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="000000">
+          <label class="field-label" for="new-password" id="new-password-label">Create a password</label>
+          <div class="password-wrap">
+            <input id="new-password" type="password" class="text-input" autocomplete="new-password" maxlength="128" aria-describedby="pw-hint">
+            <button type="button" class="pw-toggle" data-for="new-password">Show</button>
+          </div>
+          <p class="muted small" id="pw-hint">At least 8 characters.</p>
+          <button id="code-submit" class="btn primary big">Create account</button>
+          <div class="auth-links">
+            <button type="button" id="change-identifier" class="link">Go back</button>
+            <button type="button" id="resend-code" class="link">Send a new code</button>
+          </div>
+        </form>
+        <p id="auth-error" class="form-error" role="alert"></p>
+      </div>
+      </div>
+    </section>
+
+    <section id="profile" class="screen">
+      <form id="profile-form" class="auth card">
+        <h1>A little about you</h1>
+        <p class="muted">Strangers see only your gender (unless you'd rather not say) and your country. Your email, phone number and birthday are never shown to anyone.</p>
+
+        <label class="field-label" for="birthdate">Date of birth</label>
+        <input id="birthdate" type="date" class="text-input" required>
+        <p class="muted small">This can't be changed later, so please be honest. Zingo is only for adults.</p>
+
+        <label class="field-label" for="gender">Gender</label>
+        <select id="gender" class="text-input" required>
+          <option value="" disabled selected>Choose one</option>
+          <option value="woman">Woman</option>
+          <option value="man">Man</option>
+          <option value="nonbinary">Non-binary</option>
+          <option value="unspecified">Prefer not to say</option>
+        </select>
+
+        <label class="field-label" for="country">Country</label>
+        <select id="country" class="text-input" required></select>
+
+        <button class="btn primary big">Continue</button>
+        <p id="profile-error" class="form-error" role="alert"></p>
+      </form>
+    </section>
+
+    <section id="blocked" class="screen">
+      <div class="auth card">
+        <h1>Account unavailable</h1>
+        <p id="blocked-msg"></p>
+        <button id="blocked-logout" class="btn">Sign out</button>
+      </div>
+    </section>
+
+    <section id="creators" class="screen">
+      <div class="page-grid">
+        <div class="page-intro">
+          <h1>Make Zingo<br>with us.</h1>
+          <p class="lead">Creators can help people feel less alone. If your community talks about confidence, friendship or mental health, or just loves meeting new people, we'd like to hear from you.</p>
+        </div>
+        <div class="field-block hot">
+          <h2>Ideas we'd love to explore with creators</h2>
+          <ul class="idea-list">
+            <li>Themed chat nights for your community</li>
+            <li>Icebreakers written in your voice</li>
+            <li>Early looks at new features, with your feedback shaping them</li>
+            <li>Honest conversations about loneliness and confidence</li>
+          </ul>
+        </div>
+        <form id="creator-form" class="card form-card" novalidate>
+          <h2>Apply to partner</h2>
+          <label class="field-label" for="creator-name">Your name</label>
+          <input id="creator-name" class="text-input" maxlength="80" autocomplete="name">
+          <label class="field-label" for="creator-email">Email for our reply</label>
+          <input id="creator-email" type="email" class="text-input" maxlength="254" autocomplete="email">
+          <div class="two-up">
+            <label class="field-label">Main platform
+              <select id="creator-platform" class="text-input">
+                <option value="" disabled selected>Choose one</option>
+                <option value="tiktok">TikTok</option>
+                <option value="instagram">Instagram</option>
+                <option value="youtube">YouTube</option>
+                <option value="twitch">Twitch</option>
+                <option value="snapchat">Snapchat</option>
+                <option value="x">X</option>
+                <option value="other">Somewhere else</option>
+              </select>
+            </label>
+            <label class="field-label">Audience size
+              <select id="creator-audience" class="text-input">
+                <option value="" disabled selected>Choose one</option>
+                <option value="under-10k">Under 10k</option>
+                <option value="10k-50k">10k to 50k</option>
+                <option value="50k-250k">50k to 250k</option>
+                <option value="250k-1m">250k to 1M</option>
+                <option value="over-1m">Over 1M</option>
+              </select>
+            </label>
+          </div>
+          <label class="field-label" for="creator-handle">Handle or channel link</label>
+          <input id="creator-handle" class="text-input" maxlength="100" placeholder="@yourname">
+          <label class="field-label" for="creator-country">Country</label>
+          <select id="creator-country" class="text-input"></select>
+          <label class="field-label" for="creator-pitch">What would you like to make with Zingo?</label>
+          <textarea id="creator-pitch" class="text-input" rows="4" maxlength="1000"></textarea>
+          <button class="btn primary big">Send application</button>
+          <p class="form-error" role="alert"></p>
+        </form>
+        <div id="creator-done" class="card form-card done" hidden>
+          <h2>Application sent</h2>
+          <p>Thanks! We read every application and reply by email.</p>
+          <button type="button" class="btn" id="creator-again">Send another</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="suggestions" class="screen">
+      <div class="page-grid">
+        <div class="page-intro">
+          <h1>Help shape<br>Zingo.</h1>
+          <p class="lead">Got an idea, a recommendation, or something that isn't working? Tell us. We read every message.</p>
+        </div>
+        <div class="field-block lime">
+          <h2>Recommend Zingo to a friend</h2>
+          <p>Know someone who could use a friendly chat? Send them Zingo.</p>
+          <button type="button" id="share-btn" class="btn invert-dark">Share Zingo</button>
+          <p class="share-note" id="share-note" role="status"></p>
+        </div>
+        <form id="suggestion-form" class="card form-card" novalidate>
+          <h2>Send us a message</h2>
+          <div class="field-label" id="kind-label">What's it about?</div>
+          <div class="kind-chips" role="radiogroup" aria-labelledby="kind-label">
+            <label><input type="radio" name="kind" value="idea" checked><span>Idea</span></label>
+            <label><input type="radio" name="kind" value="recommendation"><span>Recommendation</span></label>
+            <label><input type="radio" name="kind" value="problem"><span>Something's broken</span></label>
+            <label><input type="radio" name="kind" value="safety"><span>Safety concern</span></label>
+          </div>
+          <p class="muted small" id="safety-note" hidden>If someone is in danger right now, contact your local emergency services first.</p>
+          <label class="field-label" for="suggestion-message">Your message</label>
+          <textarea id="suggestion-message" class="text-input" rows="6" maxlength="2000"></textarea>
+          <div id="contact-field">
+            <label class="field-label" for="suggestion-contact">Email, if you'd like a reply <span class="muted">(optional)</span></label>
+            <input id="suggestion-contact" type="email" class="text-input" maxlength="254" autocomplete="email">
+          </div>
+          <button class="btn primary big">Send message</button>
+          <p class="form-error" role="alert"></p>
+        </form>
+        <div id="suggestion-done" class="card form-card done" hidden>
+          <h2>Message sent</h2>
+          <p>Thank you. Ideas like yours decide what we build next.</p>
+          <button type="button" class="btn" id="suggestion-again">Send another</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="home" class="screen">
+     <div class="home-grid">
+      <div class="home-intro">
+        <h1>Talk to a stranger.<br>Feel less alone.</h1>
+        <p class="lead">Zingo drops you into a one-on-one chat with someone random. No profiles, no followers, no pressure. Practise opening up, or just hang out for a bit.</p>
+      </div>
+
+      <div class="card setup">
+        <div class="field-label" id="mode-label">How do you want to talk?</div>
+        <div class="modes" role="radiogroup" aria-labelledby="mode-label">
+          <label class="mode">
+            <input type="radio" name="mode" value="text">
+            <b>Text</b><small>Type at your own pace</small>
+          </label>
+          <label class="mode">
+            <input type="radio" name="mode" value="video">
+            <b>Video</b><small>Face to face, camera and mic</small>
+          </label>
+        </div>
+        <label class="check" id="blur-option" hidden><input type="checkbox" id="blur"> Blur a stranger's video until I choose to show it</label>
+
+        <div class="filters">
+          <label>Talk to
+            <select id="filter-gender" class="text-input">
+              <option value="any">Anyone</option>
+              <option value="woman">Women</option>
+              <option value="man">Men</option>
+            </select>
+          </label>
+          <label>From
+            <select id="filter-country" class="text-input">
+              <option value="any">Anywhere</option>
+              <option value="same" id="filter-country-same">My country</option>
+            </select>
+          </label>
+        </div>
+        <p class="muted small filters-note">You'll only be matched with people whose own filters include you too.</p>
+
+        <label class="field-label" for="interest-input">What do you feel like talking about? <span class="muted">(optional)</span></label>
+        <div class="chips" id="chips"></div>
+        <input id="interest-input" class="text-input" placeholder="Add your own and press Enter" maxlength="24" autocomplete="off">
+
+        <label class="check"><input type="checkbox" id="agree"> I'll follow the house rules and be respectful.</label>
+        <button id="start" class="btn primary big" disabled>Start talking</button>
+      </div>
+
+      <div class="progress">
+        <h2>Your progress</h2>
+        <div class="stats">
+          <div><b id="stat-chats">0</b><span>conversations</span></div>
+          <div><b id="stat-minutes">0</b><span>minutes talking</span></div>
+          <div><b id="stat-good">0</b><span>felt good</span></div>
+        </div>
+        <p class="small">Saved only on this device.</p>
+      </div>
+
+      <div class="card house-rules">
+        <h2>House rules</h2>
+        <ul class="rules">
+          <li><strong>Be kind.</strong> Everyone here is a real person, and lots of them are nervous too.</li>
+          <li><strong>Stay anonymous.</strong> Emails, phone numbers and links are hidden automatically.</li>
+          <li><strong>Keep video respectful.</strong> It goes straight between you two; Zingo never records or stores it.</li>
+          <li><strong>Leave anytime.</strong> Hit Next or End whenever you like, and report anyone who makes you uncomfortable.</li>
+        </ul>
+      </div>
+     </div>
+    </section>
+
+    <section id="admin" class="screen">
+      <div class="admin-head">
+        <div>
+          <h1>Admin inbox</h1>
+          <p class="admin-summary" id="admin-summary"></p>
+        </div>
+        <button type="button" id="admin-refresh" class="btn">Refresh</button>
+      </div>
+      <div class="admin-tabs" role="tablist" aria-label="Inbox">
+        <button type="button" role="tab" data-tab="creators" aria-selected="true">Creator applications <span class="count" id="count-creators"></span></button>
+        <button type="button" role="tab" data-tab="suggestions" aria-selected="false">Suggestions <span class="count" id="count-suggestions"></span></button>
+      </div>
+      <div class="admin-filters">
+        <div class="status-filter" id="status-filter" role="group" aria-label="Show"></div>
+        <select id="kind-filter" class="text-input" aria-label="Kind of suggestion" hidden>
+          <option value="">All kinds</option>
+          <option value="safety">Safety concerns</option>
+          <option value="problem">Something's broken</option>
+          <option value="idea">Ideas</option>
+          <option value="recommendation">Recommendations</option>
+        </select>
+      </div>
+      <div id="admin-list" class="admin-list" aria-live="polite"></div>
+    </section>
+
+    <section id="chat" class="screen">
+      <div class="chat-head">
+        <span id="status" class="status"><span class="dot"></span><span id="status-text">Looking for someone…</span></span>
+        <div class="chat-actions">
+          <button id="icebreaker-btn" class="btn ghost" title="Show both of you a conversation starter">Icebreaker</button>
+          <button id="report-btn" class="btn flag-btn" aria-label="Report this person">
+            <svg class="flag-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3a1 1 0 0 1 1 1v.5h11.4a.6.6 0 0 1 .5.9L16 9l1.9 3.6a.6.6 0 0 1-.5.9H6V21a1 1 0 1 1-2 0V4a1 1 0 0 1 1-1z" fill="currentColor"/></svg>
+            Report
+          </button>
+        </div>
+      </div>
+
+      <div class="chat-body">
+        <div class="video-area">
+          <video id="remote-video" autoplay playsinline></video>
+          <div id="remote-overlay" class="remote-overlay">
+            <p id="remote-note"></p>
+            <button id="reveal-btn" class="round-btn" hidden>Show video</button>
+          </div>
+          <video id="local-video" autoplay playsinline muted></video>
+          <div class="video-actions">
+            <button id="video-skip-btn" class="round-btn skip">Skip</button>
+            <button id="video-report-btn" class="round-btn flag" aria-label="Report this person">
+              <svg class="flag-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3a1 1 0 0 1 1 1v.5h11.4a.6.6 0 0 1 .5.9L16 9l1.9 3.6a.6.6 0 0 1-.5.9H6V21a1 1 0 1 1-2 0V4a1 1 0 0 1 1-1z" fill="currentColor"/></svg>
+            </button>
+          </div>
+          <div class="media-controls">
+            <button id="mic-btn" class="round-btn">Mute</button>
+            <button id="cam-btn" class="round-btn">Camera off</button>
+            <button id="blur-btn" class="round-btn">Blur</button>
+          </div>
+        </div>
+
+        <div class="chat-panel">
+          <div id="messages" class="messages" aria-live="polite"></div>
+          <div id="typing" class="typing" hidden>Stranger is typing…</div>
+
+          <form id="composer" class="composer">
+            <button type="button" id="next-btn" class="btn invert"><span id="next-label">Skip</span> <kbd>Esc</kbd></button>
+            <input id="msg" class="text-input" autocomplete="off" placeholder="Say hi…" maxlength="1000" disabled>
+            <button id="send" class="btn primary" disabled>Send</button>
+          </form>
+        </div>
+      </div>
+      <button id="end-btn" class="link">End and go home</button>
+    </section>
+  </main>
+
+  <dialog id="reflect">
+    <h2>How did that feel?</h2>
+    <p class="muted">Only you see this. It helps you notice your progress.</p>
+    <div class="moods">
+      <button data-mood="1">Rough</button>
+      <button data-mood="2">Meh</button>
+      <button data-mood="3">Good</button>
+      <button data-mood="4">Great</button>
+    </div>
+    <p id="reflect-msg" class="reflect-msg"></p>
+    <div class="dialog-actions">
+      <button id="again-btn" class="btn primary">Talk to someone new</button>
+      <button id="home-btn" class="btn">Back home</button>
+    </div>
+  </dialog>
+
+  <dialog id="report-dialog">
+    <h2>Report this person</h2>
+    <p class="muted">The chat ends straight away.</p>
+    <form method="dialog" id="report-form">
+      <label><input type="radio" name="reason" value="harassment" checked> Harassment or bullying</label>
+      <label><input type="radio" name="reason" value="sexual"> Sexual content</label>
+      <label><input type="radio" name="reason" value="hate"> Hate speech</label>
+      <label><input type="radio" name="reason" value="minor"> Seems to be under 18</label>
+      <label><input type="radio" name="reason" value="spam"> Spam or scam</label>
+      <div class="dialog-actions">
+        <button value="report" class="btn danger-solid">Report and leave</button>
+        <button value="cancel" class="btn">Cancel</button>
+      </div>
+    </form>
+  </dialog>
+
+  <footer class="help">
+    Going through something heavy? You don't have to face it alone.
+    <a href="https://findahelpline.com" target="_blank" rel="noopener">Find a free helpline near you</a>.
+  </footer>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="countries.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

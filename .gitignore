@@ -1,0 +1,18 @@
+# Installed packages
+node_modules/
+
+# The database: accounts, sessions, reports. Never commit it.
+data/
+*.db
+*.db-shm
+*.db-wal
+
+# Generated output
+load/results-*.json
+.taste-skill/
+
+# Local settings and secrets
+.env
+.env.*
+.DS_Store
+npm-debug.log*

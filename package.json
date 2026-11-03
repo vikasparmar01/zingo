@@ -1,0 +1,29 @@
+{
+  "name": "zingo",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Anonymous one-on-one chats with strangers, built to ease loneliness and build confidence.",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/vikasparmar01/zingo.git"
+  },
+  "engines": {
+    "node": ">=22.5"
+  },
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node --test test/",
+    "load": "node load/loadtest.js"
+  },
+  "dependencies": {
+    "express": "^4.22.3",
+    "libphonenumber-js": "^1.13.15",
+    "nodemailer": "^10.3.1",
+    "socket.io": "^4.8.4"
+  },
+  "devDependencies": {
+    "socket.io-client": "^4.8.4"
+  }
+}
